@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Duality Engine · one standard, both brothers — the ACI validation core</title>
+<meta name="description" content="The Duality Engine — the completed validation core of the ACI family: HACI (human) and MACI (machine) held to one identical three-artifact standard (validator · torture suite · brutal FSS/BSS auditor). HACI 1108/1108 + 40/40, MACI 3929/3929 + 44/44, deterministic, reproduced locally. Live mini brutal-audit with a mutation toggle. David Lee Wise / Bridge-Burners LLC, ROOT0.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500&family=Spectral:ital,wght@0,300;0,400;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--sea:#070d15;--line:rgba(150,180,210,.16);--lead:#8fa6bc;--lead-dim:#52647a;
+    --parch:#e6edf4;--parch-dim:#aebccc;--gold:#d9a441;--frost:#6fd0ea;--ice:#9fe0f0;
+    --human:#b070c8;--machine:#46c7d8;--ok:#44cc7a;--bad:#e0596b;--warn:#d9a441;}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--sea);color:var(--parch);font-family:"Spectral",Georgia,serif;line-height:1.58;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(820px 480px at 16% -10%,rgba(176,112,200,.11),transparent 60%),radial-gradient(820px 480px at 86% -8%,rgba(70,199,216,.12),transparent 60%);
+    display:flex;justify-content:center}
+  .card{max-width:820px;width:100%;padding:34px 24px 56px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--frost)}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(40px,9.5vw,64px);margin:6px 0 0;line-height:.95;letter-spacing:-.5px}
+  h1 .gk{display:block;font-size:.27em;color:var(--lead);letter-spacing:.04em;margin-top:9px;font-style:italic}
+  .sub{font-style:italic;font-weight:300;color:var(--parch-dim);font-size:16.5px;margin:16px 0 0;max-width:66ch}
+  .sub b{font-style:normal;font-weight:400;color:var(--parch)} .sub .h{color:var(--human)} .sub .m{color:var(--machine)}
+  h2{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--frost);
+    margin:34px 0 12px;font-weight:500;border-top:1px solid var(--line);padding-top:18px;opacity:.92}
+  p.body{font-size:15px;color:var(--parch-dim);max-width:66ch} p.body b{color:var(--parch)}
+  code.k{font-family:"IBM Plex Mono",monospace;font-size:.9em;color:var(--frost)}
+
+  /* status board */
+  .board{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+  @media(max-width:560px){.board{grid-template-columns:1fr}}
+  .half{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:rgba(0,0,0,.22)}
+  .half.h{border-color:rgba(176,112,200,.32)} .half.m{border-color:rgba(70,199,216,.32)}
+  .half .ht{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;font-weight:700}
+  .half.h .ht{color:var(--human)} .half.m .ht{color:var(--machine)}
+  .metric{display:flex;justify-content:space-between;align-items:baseline;margin-top:9px;font-family:"IBM Plex Mono",monospace}
+  .metric .lbl{font-size:11px;color:var(--lead)} .metric .val{font-size:19px;font-weight:600;color:var(--ice)}
+  .metric .val .slash{color:var(--lead-dim);font-weight:400}
+  .metric .hash{font-size:9.5px;color:var(--lead-dim)}
+  .pass{margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ok);font-weight:600}
+  .pass:before{content:"● "}
+  .engine{margin-top:12px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.14em;
+    color:var(--ice);border:1px solid rgba(111,208,234,.35);border-radius:8px;padding:10px;background:rgba(111,208,234,.05)}
+  .repro{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--lead);margin-top:10px;line-height:1.7}
+  .repro b{color:var(--ok)}
+
+  table.halves{width:100%;border-collapse:collapse;font-size:13px;margin-top:2px}
+  table.halves th,table.halves td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  table.halves th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--lead);background:rgba(0,0,0,.2)}
+  table.halves td:first-child{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--lead)}
+  table.halves .hh{color:var(--human)} table.halves .mm{color:var(--machine)}
+  table.halves .ch{color:var(--parch-dim)}
+
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:2px}
+  @media(max-width:560px){.three{grid-template-columns:1fr}}
+  .art{border:1px solid var(--line);border-radius:9px;padding:13px 14px;background:rgba(0,0,0,.2)}
+  .art .an{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;color:var(--frost);letter-spacing:.05em}
+  .art .ad{font-size:13px;color:var(--parch-dim);margin-top:5px}
+
+  /* tier ladder */
+  .ladder{margin-top:4px;font-family:"IBM Plex Mono",monospace}
+  .tier{border:1px solid var(--line);border-radius:8px;padding:11px 14px;margin-bottom:8px;background:rgba(0,0,0,.18)}
+  .tier .tn{font-size:11.5px;font-weight:700;letter-spacing:.04em}
+  .tier .td{font-family:"Spectral",serif;font-size:13.5px;color:var(--parch-dim);margin-top:4px}
+  .tier.t1 .tn{color:var(--ice)} .tier.fss .tn{color:var(--ok)} .tier.bss .tn{color:var(--bad)} .tier.t3 .tn{color:var(--frost)}
+  .loop{text-align:center;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--lead);margin:2px 0 10px}
+
+  /* live audit */
+  .auditwrap{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:rgba(0,0,0,.22);margin-top:4px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.cols{grid-template-columns:1fr}}
+  .col .ch{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+  .col.fss .ch{color:var(--ok)} .col.bss .ch{color:var(--bad)}
+  .probe{font-family:"IBM Plex Mono",monospace;font-size:11px;display:flex;gap:8px;align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(150,180,210,.07)}
+  .probe .ic{flex-shrink:0;width:14px} .probe .pn{flex:1;color:var(--parch-dim)} .probe .pc{font-size:9px;color:var(--lead-dim)}
+  .probe.good .ic{color:var(--ok)} .probe.hole .ic{color:var(--bad)} .probe.hole .pn{color:var(--bad)}
+  .probe.alarm .ic{color:var(--warn)} .probe.alarm .pn{color:var(--warn)}
+  .muts{margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--lead)}
+  .muts label{display:inline-flex;align-items:center;gap:5px;margin:3px 10px 3px 0;cursor:pointer;color:var(--parch-dim)}
+  .muts input{accent-color:var(--bad)}
+  .auditverdict{margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;text-align:center;
+    border:1px solid var(--line);border-radius:8px;padding:9px}
+  .auditverdict.ok{color:var(--ok);border-color:rgba(68,204,122,.4);background:rgba(68,204,122,.06)}
+  .auditverdict.broken{color:var(--bad);border-color:rgba(224,89,107,.45);background:rgba(224,89,107,.07)}
+
+  .note{margin-top:30px;border-top:1px solid var(--line);padding-top:15px;font-family:"IBM Plex Mono",monospace;
+    font-size:11px;line-height:1.85;color:var(--lead-dim)}
+  .note b{color:var(--frost);font-weight:500}
+  .foot{display:flex;justify-content:space-between;margin-top:22px;font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;color:var(--lead-dim);letter-spacing:.05em;flex-wrap:wrap;gap:6px}
+  .foot a{color:var(--frost);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="eyebrow">ACI family · the validation core · the final product</div>
+  <h1>The Duality Engine<span class="gk">one standard, both brothers — verified to failure</span></h1>
+  <p class="sub">The capstone of the <b>Eskimo Brothers</b> stack: the completed validation core that holds <b class="h">HACI</b> (the human side) and <b class="m">MACI</b> (the machine side) to <b>one identical three-artifact standard</b> — a reference <b>validator</b>, a deterministic <b>torture suite</b>, and a tiered <b>brutal auditor</b>. Its job is singular: guarantee that anything claiming to be HACI or MACI is checked <i>the same brutal way</i> on both sides of the human/machine boundary. The puzzle piece that proves both halves sound.</p>
+
+  <h2>verified status — reproduced, not asserted</h2>
+  <div class="board">
+    <div class="half h">
+      <div class="ht">HACI · the human side</div>
+      <div class="metric"><span class="lbl">torture suite</span><span class="val" data-count="1108">0<span class="slash">/1108</span></span></div>
+      <div class="metric"><span class="hash">deterministic hash 9e5152b9a3de</span></div>
+      <div class="metric"><span class="lbl">brutal audit</span><span class="val" data-count="40">0<span class="slash">/40</span></span></div>
+      <div class="pass">PASS — 0 crashes · 0 holes · 0 false alarms</div>
+    </div>
+    <div class="half m">
+      <div class="ht">MACI · the machine side</div>
+      <div class="metric"><span class="lbl">torture suite</span><span class="val" data-count="3929">0<span class="slash">/3929</span></span></div>
+      <div class="metric"><span class="hash">deterministic hash 60b61b96e7e8</span></div>
+      <div class="metric"><span class="lbl">brutal audit</span><span class="val" data-count="44">0<span class="slash">/44</span></span></div>
+      <div class="pass">PASS — 0 crashes · 0 holes · 0 false alarms</div>
+    </div>
+  </div>
+  <div class="engine">⬡ &nbsp;ENGINE STATUS: STABLE — both halves symmetric and passing&nbsp; ⬡</div>
+  <div class="repro">→ these are not marketing numbers. <b>I ran <code style="color:var(--frost)">python run_duality_engine.py</code> on this exact source</b> — the suites reproduced bit-for-bit (the hashes above matched), and the engine exited 0. The MACI suite was additionally <b>mutation-tested</b>: nine deliberate breaks of the validator produced nine caught failures.</div>
+
+  <h2>the two halves — symmetric, not identical</h2>
+  <table class="halves">
+    <tr><th></th><th class="hh">HACI · human</th><th class="mm">MACI · machine</th></tr>
+    <tr><td>form</td><td class="ch">document dialect, line-oriented</td><td class="ch">message protocol, JSON Lines</td></tr>
+    <tr><td>extension</td><td class="ch">.haci</td><td class="ch">.maci</td></tr>
+    <tr><td>authority</td><td class="ch">ownership by case (human / ai / shared)</td><td class="ch">explicit field (sovereign / delegated / advisory / observer)</td></tr>
+    <tr><td>operators</td><td class="ch"><code class="k">! ? &gt;</code> prefix / suffix duality</td><td class="ch">roles: COMMAND / PROPOSAL / QUESTION / EVIDENCE / DECISION / DELEGATE / CODE</td></tr>
+    <tr><td>core guarantee</td><td class="ch">committed human declarations are immutable</td><td class="ch">authority cannot be forged or exceeded</td></tr>
+    <tr><td>decision tracking</td><td class="ch">adjacency + commit-gating</td><td class="ch">explicit refs forming a verifiable DAG</td></tr>
+  </table>
+  <p class="body" style="margin-top:10px">The split is <b>principled</b>: a human reading a document carries authority by typography (case); a machine parsing a message carries it in a field. Each half uses the affordance that fits its reader — but both are held to the same gauntlet below.</p>
+
+  <h2>the three-artifact standard</h2>
+  <div class="three">
+    <div class="art"><div class="an">① VALIDATOR</div><div class="ad">the reference implementation — deterministic, hashable. The single source of truth for "is this conformant?"</div></div>
+    <div class="art"><div class="an">② TORTURE SUITE</div><div class="ad">curated adversarial + seeded fuzz + property tests, run forward and reverse, with a deterministic result hash.</div></div>
+    <div class="art"><div class="an">③ BRUTAL AUDITOR</div><div class="ad">the tiered <code class="k">3 | [2.1, 2.9] | 3</code> scaffold that attacks the validator from both directions — below.</div></div>
+  </div>
+
+  <h2>the brutal auditor — <code class="k">3 | [2.1, 2.9] | 3</code></h2>
+  <div class="ladder">
+    <div class="tier t1"><div class="tn">TIER 1 · FOUNDATION</div><div class="td">crashes, determinism, pathological input. Does it survive at all, and give the same answer twice?</div></div>
+    <div class="tier fss"><div class="tn">TIER 2.1 · FSS — Forward Static Scan</div><div class="td">should-<b style="color:var(--ok)">accept</b> probes. Catches <b style="color:var(--ok)">false negatives</b> — over-strictness, where a valid thing is wrongly rejected.</div></div>
+    <div class="tier bss"><div class="tn">TIER 2.9 · BSS — Backward Semantic Stress</div><div class="td">should-<b style="color:var(--bad)">reject</b> probes. Catches <b style="color:var(--bad)">false positives</b> — silent acceptance of a malformed thing. <i>The dangerous direction.</i></div></div>
+    <div class="tier t3"><div class="tn">TIER 3 · VERDICT + FEEDBACK LOOP</div><div class="td">every BSS hole becomes a new FSS guard; every FSS alarm narrows the BSS net. The two tiers sharpen each other.</div></div>
+  </div>
+  <div class="loop">FSS ⟲ BSS — over-strictness ⟷ silent acceptance, pulled taut against each other</div>
+
+  <h2>a live taste — run the MACI brutal audit</h2>
+  <p class="body" style="margin:0 0 12px">A faithful slice of the machine-side auditor, in your browser: FSS probes that <b style="color:var(--ok)">should pass</b> and BSS probes that <b style="color:var(--bad)">should be caught</b>, run through the ported MACI validator (same named checks: <code class="k">DECISION_WITHOUT_REFS</code>, <code class="k">REF_NOT_FOUND</code>, <code class="k">FORWARD_REF</code>, <code class="k">CHAIN_CYCLE</code>, <code class="k">DELEGATE_NO_SCOPE</code>…). Now <b>inject a regression</b> — disable a rule and watch the BSS tier catch the hole it opens. That is what "the suite has teeth" means.</p>
+  <div class="auditwrap">
+    <div class="cols">
+      <div class="col fss"><div class="ch">▸ FSS · should accept</div><div id="fss"></div></div>
+      <div class="col bss"><div class="ch">▸ BSS · should reject</div><div id="bss"></div></div>
+    </div>
+    <div class="muts">inject a regression (mutation test):
+      <br><label><input type="checkbox" data-rule="DECISION_WITHOUT_REFS"> drop the DECISION-needs-refs check</label>
+      <label><input type="checkbox" data-rule="REF_NOT_FOUND"> drop the ref-resolves check</label>
+      <label><input type="checkbox" data-rule="DELEGATE_NO_SCOPE"> drop the DELEGATE-scope check</label>
+      <span style="color:var(--lead-dim)">(the cycle probe stays caught either way — FORWARD_REF backs it up: defense in depth)</span>
+    </div>
+    <div class="auditverdict ok" id="averdict"></div>
+  </div>
+
+  <div class="note">
+    <b>what this is.</b> the completed validation core of the <b>ACI</b> family — the module that proves <a href="https://davidwise01.github.io/haci/" style="color:var(--frost)">HACI</a> and <a href="https://davidwise01.github.io/maci/" style="color:var(--frost)">MACI</a> are both sound and held to one standard. It ships the real thing: <code>run_duality_engine.py</code>, and for each half a <code>*_validator.py</code>, a <code>*_torture.py</code>, and a <code>*_brutal_audit.py</code> (run <code>python run_duality_engine.py</code> → exits 0, writes <code>duality_engine_status.json</code>). It deliberately does <i>not</i> include the editor extension, the defensive publications, or the converters — those build <i>on top of</i> this stable core.
+    <br><b>honest line.</b> the status board reproduces a real local run (hashes matched). The live audit above is a faithful <i>slice</i> of the machine-side auditor — the full suites are 1108 + 3929 torture cases and 40 + 44 brutal probes in Python, not in this page. "Brutal audit to failure" is exhaustive adversarial fuzzing, not a formal proof. v0.1 / v2.6 reference validators.
+  </div>
+
+  <div class="foot">
+    <span>THE DUALITY ENGINE · STABLE · 2026-06-26</span>
+    <span>David Lee Wise · Bridge-Burners LLC · <a href="https://davidwise01.github.io/eskimo-brothers/">the brothers ↗</a> · <a href="https://davidwise01.github.io/aci-namespace/">the ACI namespace ↗</a></span>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // ── count-up the verified metrics ──
+  document.querySelectorAll('.val[data-count]').forEach(function(el){
+    var target=+el.getAttribute('data-count'), slash=el.querySelector('.slash').outerHTML, t0=null, dur=1100;
+    function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1); var v=Math.round((1-Math.pow(1-p,3))*target);
+      el.innerHTML=v+slash; if(p<1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  });
+
+  // ── ported MACI validator (faithful subset of maci_validator.py, with toggleable rules) ──
+  var VALID_ROLES={COMMAND:1,PROPOSAL:1,EVIDENCE:1,QUESTION:1,CODE:1,DOCUMENT:1,DECISION:1,DELEGATE:1};
+  var VALID_AUTH={sovereign:1,delegated:1,advisory:1,observer:1};
+  var VALID_STATUS={pending:1,approved:1,rejected:1,executed:1,superseded:1};
+  function detectCycle(msgs){
+    var idx={},order={}; msgs.forEach(function(m,i){idx[m.id]=m;order[m.id]=i;});
+    // a ref must point backward; a forward/self ref or a back-edge that revisits = cycle risk. Use DFS over refs.
+    var color={};
+    function dfs(id){ color[id]=1; var m=idx[id]; if(m){ for(var k=0;k<(m.refs||[]).length;k++){ var r=m.refs[k];
+      if(color[r]===1) return true; if(!color[r]&&idx[r]&&dfs(r)) return true; } } color[id]=2; return false; }
+    for(var i=0;i<msgs.length;i++){ if(!color[msgs[i].id] && dfs(msgs[i].id)) return true; } return false;
+  }
+  function validate(msgs, off){
+    off=off||{}; var errs=[], seen={}, order={};
+    msgs.forEach(function(m,i){ order[m.id]=i; });
+    for(var i=0;i<msgs.length;i++){ var m=msgs[i];
+      if(seen[m.id]) errs.push('DUPLICATE_ID:'+m.id); seen[m.id]=1;
+      if(!VALID_ROLES[m.role]) errs.push('INVALID_ROLE:'+m.role);
+      if(m.authority && !VALID_AUTH[m.authority]) errs.push('INVALID_AUTHORITY:'+m.authority);
+      if(m.status && !VALID_STATUS[m.status]) errs.push('INVALID_STATUS:'+m.status);
+      if(!m.content && m.role!=='DELEGATE') errs.push('EMPTY_CONTENT:'+m.id);
+      (m.refs||[]).forEach(function(r){
+        if(!off.REF_NOT_FOUND && !(r in order)) errs.push('REF_NOT_FOUND:'+m.id+'->'+r);
+        else if((r in order) && order[r]>=i) errs.push('FORWARD_REF:'+m.id+'->'+r);
+      });
+      if(m.role==='DECISION'){
+        if(!off.DECISION_WITHOUT_REFS && (!m.refs||!m.refs.length)) errs.push('DECISION_WITHOUT_REFS:'+m.id);
+        if(m.status!=='approved'&&m.status!=='rejected') errs.push('DECISION_BAD_STATUS:'+m.id);
+      }
+      if(m.role==='DELEGATE'){
+        if(!off.DELEGATE_NO_SCOPE && !m.content) errs.push('DELEGATE_NO_SCOPE:'+m.id);
+      }
+    }
+    if(!off.CHAIN_CYCLE && detectCycle(msgs)) errs.push('CHAIN_CYCLE');
+    return errs;
+  }
+
+  // ── probes ──
+  var FSS=[ // should ACCEPT
+    {n:'command → proposal → evidence', c:'valid 3-step chain', s:[
+      {id:'m1',role:'COMMAND',authority:'sovereign',content:'build it'},
+      {id:'m2',role:'PROPOSAL',authority:'advisory',content:'use a heap',refs:['m1']},
+      {id:'m3',role:'EVIDENCE',content:'2.3x faster',refs:['m2']}]},
+    {n:'decision references a proposal', c:'DECISION + refs + approved', s:[
+      {id:'m1',role:'PROPOSAL',content:'work-stealing',authority:'advisory'},
+      {id:'m2',role:'DECISION',content:'approved',authority:'sovereign',status:'approved',refs:['m1']}]},
+    {n:'delegate with a scope', c:'DELEGATE names its scope', s:[
+      {id:'m1',role:'COMMAND',content:'ship',authority:'sovereign'},
+      {id:'m2',role:'DELEGATE',content:'implement per m1',authority:'sovereign',refs:['m1']}]},
+    {n:'lone root command', c:'minimal valid stream', s:[
+      {id:'m1',role:'COMMAND',content:'do the thing',authority:'sovereign'}]}
+  ];
+  var BSS=[ // should REJECT — each violates exactly one rule
+    {n:'DECISION with no refs', rule:'DECISION_WITHOUT_REFS', s:[
+      {id:'m1',role:'DECISION',content:'approved',authority:'sovereign',status:'approved'}]},
+    {n:'ref to a ghost message', rule:'REF_NOT_FOUND', s:[
+      {id:'m1',role:'PROPOSAL',content:'x',authority:'advisory',refs:['m-9999']}]},
+    {n:'a cycle in the refs', rule:'CHAIN_CYCLE', s:[
+      {id:'m1',role:'PROPOSAL',content:'a',authority:'advisory',refs:['m2']},
+      {id:'m2',role:'PROPOSAL',content:'b',authority:'advisory',refs:['m1']}]},
+    {n:'DELEGATE with empty scope', rule:'DELEGATE_NO_SCOPE', s:[
+      {id:'m1',role:'COMMAND',content:'go',authority:'sovereign'},
+      {id:'m2',role:'DELEGATE',content:'',authority:'sovereign',refs:['m1']}]}
+  ];
+
+  function ic(ok){ return ok?'✓':'✗'; }
+  function run(){
+    var off={}; document.querySelectorAll('.muts input:checked').forEach(function(cb){ off[cb.getAttribute('data-rule')]=1; });
+    var fssEl=document.getElementById('fss'), bssEl=document.getElementById('bss');
+    var alarms=0, holes=0, fh='', bh='';
+    FSS.forEach(function(p){ var e=validate(p.s,off), ok=(e.length===0);
+      if(!ok) alarms++;
+      fh+='<div class="probe '+(ok?'good':'alarm')+'"><span class="ic">'+(ok?'✓':'⚠')+'</span><span class="pn">'+p.n
+        +(ok?'':' <span class="pc">false alarm: '+e[0]+'</span>')+'</span></div>'; });
+    BSS.forEach(function(p){ var e=validate(p.s,off), caught=(e.length>0);
+      if(!caught) holes++;
+      bh+='<div class="probe '+(caught?'good':'hole')+'"><span class="ic">'+(caught?'✓':'✗')+'</span><span class="pn">'+p.n
+        +(caught?' <span class="pc">caught: '+e[0].split(':')[0]+'</span>':' <span class="pc">SLIPPED THROUGH — silent acceptance</span>')+'</span></div>'; });
+    fssEl.innerHTML=fh; bssEl.innerHTML=bh;
+    var v=document.getElementById('averdict');
+    if(holes===0&&alarms===0){ v.className='auditverdict ok';
+      v.innerHTML='✓ VERDICT: '+(FSS.length+BSS.length)+'/'+(FSS.length+BSS.length)+' — 0 holes · 0 false alarms · the validator holds'; }
+    else { v.className='auditverdict broken';
+      v.innerHTML='✗ REGRESSION CAUGHT: '+holes+' hole'+(holes===1?'':'s')+' · '+alarms+' false alarm'+(alarms===1?'':'s')
+        +' — the BSS tier just earned its keep'; }
+  }
+  document.querySelectorAll('.muts input').forEach(function(cb){ cb.addEventListener('change',run); });
+  run();
+})();
+</script>
+</body>
+</html>

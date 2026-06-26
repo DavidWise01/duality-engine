@@ -1,0 +1,24 @@
+{
+  "auditor": "brutal_audit tiered FSS/BSS",
+  "target": "haci_project_validator_v2_5",
+  "tiers": {
+    "1": {
+      "pass": 15,
+      "total": 15
+    },
+    "2.1": {
+      "pass": 12,
+      "total": 12
+    },
+    "2.9": {
+      "pass": 13,
+      "total": 13
+    }
+  },
+  "crashes": 0,
+  "criticals": 0,
+  "total_pass": 40,
+  "total_run": 40,
+  "verdict": "PASS \u2014 survived to failure attempts; pos/neg boundary tight",
+  "findings": []
+}

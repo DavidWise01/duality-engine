@@ -1,0 +1,24 @@
+{
+  "auditor": "maci_brutal_audit tiered FSS/BSS",
+  "target": "maci_validator v0.1",
+  "tiers": {
+    "1": {
+      "pass": 15,
+      "total": 15
+    },
+    "2.1": {
+      "pass": 12,
+      "total": 12
+    },
+    "2.9": {
+      "pass": 17,
+      "total": 17
+    }
+  },
+  "crashes": 0,
+  "criticals": 0,
+  "total_pass": 44,
+  "total_run": 44,
+  "verdict": "PASS \u2014 survived to failure attempts; pos/neg boundary tight",
+  "findings": []
+}
