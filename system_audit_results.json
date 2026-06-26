@@ -1,0 +1,26 @@
+{
+  "audit": "system_brutal_audit (assembled Duality Engine)",
+  "tiers": {
+    "1": [
+      5,
+      5
+    ],
+    "2.1": [
+      4,
+      4
+    ],
+    "2.9": [
+      5,
+      5
+    ]
+  },
+  "crashes": 0,
+  "criticals": 0,
+  "highs": 0,
+  "overall": [
+    14,
+    14
+  ],
+  "verdict": "PASS \u2014 the assembled system is sound AND proven non-vacuous (it fails when broken)",
+  "findings": []
+}

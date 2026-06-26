@@ -53,12 +53,46 @@ Both halves are held to the identical three-artifact standard:
    - **Tier 3** — verdict + pos/neg feedback loop: every BSS hole becomes
      an FSS guard, every FSS alarm narrows the BSS net
 
+## The converged layer
+
+Each half has its own FSS/BSS feeding its own foundation. The converged
+layer (`shared/converged_audit.py`) unifies them: one FSS and one BSS that
+test the same protocol invariants against BOTH validators, feeding back
+into one shared foundation.
+
+Convergence is at the property level, not the input level. The two halves
+speak different surface languages — HACI takes a document tree, MACI takes
+a message stream — so no single literal input feeds both. Instead, each
+shared invariant gets a HACI realization and a MACI realization, and the
+converged test asserts the invariant holds on both.
+
+Seven shared invariants: I1 AUTHORITY_INTEGRITY, I2 REFERENCE_SOUNDNESS,
+I3 COMMITMENT_IMMUTABILITY, I4 ACYCLICITY, I5 CAUSAL_ORDER,
+I6 WELL_FORMED_ACCEPTED (FSS), I7 MALFORMED_REJECTED (BSS).
+
+The converged loop's unique product is cross-half asymmetry detection.
+An asymmetry is where the two halves enforce a shared invariant with
+different strength — the map of where human and machine sides agree in
+principle but diverge in mechanism. Recorded, not failed: the most
+valuable signal the convergence produces.
+
+The one current asymmetry (I5): MACI enforces causal order (a forward
+reference is a hard error), while HACI enforces only reference
+resolvability (out-of-order but resolvable references are accepted with a
+warning). MACI's constraint strictly contains HACI's — machines need
+strict ordering for replayable streams; human documents tolerate forward
+references a reader can follow.
+
+```
+CONVERGED: FSS 12/12 · BSS 12/12 · asymmetries 1 · STABLE
+```
+
 ## Current status
 
 ```
 HACI : torture 1108/1108  ·  brutal 40/40  ·  PASS
 MACI : torture 3929/3929  ·  brutal 44/44  ·  PASS
-ENGINE: STABLE — both halves symmetric and passing
+ENGINE: STABLE — both halves symmetric, converged loop sound
 ```
 
 Both torture suites are deterministic (fixed hashes across runs). Both

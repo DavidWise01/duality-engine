@@ -1,0 +1,24 @@
+{
+  "converged": true,
+  "fs_ok": true,
+  "vacuous": false,
+  "invariant_count": 7,
+  "fss": {
+    "pass": 12,
+    "total": 12,
+    "false_negatives": 0
+  },
+  "bss": {
+    "pass": 12,
+    "total": 12,
+    "false_positives": 0
+  },
+  "asymmetries": [
+    {
+      "invariant": "I5 CAUSAL_ORDER",
+      "detail": "MACI enforces causal ORDER (forward refs are a hard FORWARD_REF error). HACI enforces only reference RESOLVABILITY (unresolved target errors; out-of-order but resolvable refs are accepted with an OPEN_CONVERSATION warning). MACI's constraint strictly contains HACI's."
+    }
+  ],
+  "findings": [],
+  "stable": true
+}

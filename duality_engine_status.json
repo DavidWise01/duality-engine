@@ -21,6 +21,12 @@
     "maci_brutal": {
       "verdict": "44/44",
       "ok": true
+    },
+    "converged": {
+      "fss": "12/12   false negatives: 0",
+      "bss": "12/12   false positives: 0",
+      "asymmetries": "1 (recorded, not failures)",
+      "ok": true
     }
   }
 }

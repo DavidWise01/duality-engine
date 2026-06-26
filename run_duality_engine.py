@@ -71,6 +71,23 @@ print(f"│  brutal audit  : {mv}   {'✓' if mbok else '✗'}")
 results["maci_brutal"] = {"verdict": mv, "ok": mbok}
 print("└─────────────────────────────────────────────────────────────┘")
 
+# ── converged cross-half layer ─────────────────────────────────────────
+print("\n┌─ CONVERGED (cross-half) ────────────────────────────────────┐")
+out, err, rc = run("converged", os.path.join(HERE, "shared"), "converged_audit.py")
+conv_stable = False
+fss_line = bss_line = asym_line = ""
+for line in out.splitlines():
+    if "FSS (converged accept):" in line: fss_line = line.split(":", 1)[1].strip()
+    if "BSS (converged reject):" in line: bss_line = line.split(":", 1)[1].strip()
+    if "asymmetries:" in line and "cross-half" in line: asym_line = line.split(":", 1)[1].strip()
+    if "CONVERGED LOOP: ✓ STABLE" in line: conv_stable = True
+print(f"│  converged FSS : {fss_line}")
+print(f"│  converged BSS : {bss_line}")
+print(f"│  asymmetries   : {asym_line}")
+print(f"│  loop status   : {'✓ STABLE' if conv_stable else '✗ UNSTABLE'}")
+results["converged"] = {"fss": fss_line, "bss": bss_line, "asymmetries": asym_line, "ok": conv_stable}
+print("└─────────────────────────────────────────────────────────────┘")
+
 # ── unified verdict ────────────────────────────────────────────────────
 print("\n" + "=" * 64)
 all_ok = all(r.get("ok") for r in results.values())
@@ -80,8 +97,9 @@ sym = (results["haci_torture"]["ok"] and results["maci_torture"]["ok"]
 print("  SYMMETRY CHECK:")
 print(f"    HACI: validator + torture + brutal(3|[2.1,2.9]|3)  {'✓' if results['haci_torture']['ok'] and results['haci_brutal']['ok'] else '✗'}")
 print(f"    MACI: validator + torture + brutal(3|[2.1,2.9]|3)  {'✓' if results['maci_torture']['ok'] and results['maci_brutal']['ok'] else '✗'}")
+print(f"    CONVERGED: unified FSS/BSS -> one foundation         {'✓' if results['converged']['ok'] else '✗'}")
 print()
-print(f"  ENGINE STATUS: {'✓ STABLE — both halves symmetric and passing' if all_ok else '✗ UNSTABLE'}")
+print(f"  ENGINE STATUS: {'✓ STABLE — both halves symmetric, converged loop sound' if all_ok else '✗ UNSTABLE'}")
 print("=" * 64)
 
 with open(os.path.join(HERE, "duality_engine_status.json"), "w") as f:

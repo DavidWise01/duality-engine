@@ -97,7 +97,7 @@
 <div class="card">
   <div class="eyebrow">ACI family · the validation core · the final product</div>
   <h1>The Duality Engine<span class="gk">one standard, both brothers — verified to failure</span></h1>
-  <p class="sub">The capstone of the <b>Eskimo Brothers</b> stack: the completed validation core that holds <b class="h">HACI</b> (the human side) and <b class="m">MACI</b> (the machine side) to <b>one identical three-artifact standard</b> — a reference <b>validator</b>, a deterministic <b>torture suite</b>, and a tiered <b>brutal auditor</b>. Its job is singular: guarantee that anything claiming to be HACI or MACI is checked <i>the same brutal way</i> on both sides of the human/machine boundary. The puzzle piece that proves both halves sound.</p>
+  <p class="sub">The capstone of the <b>Eskimo Brothers</b> stack: the completed validation core that holds <b class="h">HACI</b> (the human side) and <b class="m">MACI</b> (the machine side) to <b>one identical three-artifact standard</b> — a reference <b>validator</b>, a deterministic <b>torture suite</b>, and a tiered <b>brutal auditor</b>. Its job is singular: guarantee that anything claiming to be HACI or MACI is checked <i>the same brutal way</i> on both sides of the human/machine boundary. And above the two halves sits a <b>third, converged</b> layer — one auditor testing shared invariants against <i>both</i> at once, mapping where they agree and where they diverge — plus a <b>system audit</b> that breaks the assembled engine on purpose, to prove it isn't a rubber stamp. Two brothers, one bond between them: the duality made ternary.</p>
 
   <h2>verified status — reproduced, not asserted</h2>
   <div class="board">
@@ -116,8 +116,24 @@
       <div class="pass">PASS — 0 crashes · 0 holes · 0 false alarms</div>
     </div>
   </div>
-  <div class="engine">⬡ &nbsp;ENGINE STATUS: STABLE — both halves symmetric and passing&nbsp; ⬡</div>
-  <div class="repro">→ these are not marketing numbers. <b>I ran <code style="color:var(--frost)">python run_duality_engine.py</code> on this exact source</b> — the suites reproduced bit-for-bit (the hashes above matched), and the engine exited 0. The MACI suite was additionally <b>mutation-tested</b>: nine deliberate breaks of the validator produced nine caught failures.</div>
+  <div class="board" style="margin-top:12px">
+    <div class="half" style="border-color:rgba(111,208,234,.34)">
+      <div class="ht" style="color:var(--frost)">CONVERGED · the cross-half third</div>
+      <div class="metric"><span class="lbl">converged FSS (accept both)</span><span class="val" data-count="12">0<span class="slash">/12</span></span></div>
+      <div class="metric"><span class="lbl">converged BSS (reject both)</span><span class="val" data-count="12">0<span class="slash">/12</span></span></div>
+      <div class="metric"><span class="lbl">cross-half asymmetries</span><span class="val" style="color:var(--warn)" data-count="1">0</span></div>
+      <div class="pass">STABLE — 1 asymmetry recorded, not failed</div>
+    </div>
+    <div class="half" style="border-color:rgba(217,164,65,.3)">
+      <div class="ht" style="color:var(--warn)">SYSTEM AUDIT · auditing the auditor</div>
+      <div class="metric"><span class="lbl">assembled-engine audit</span><span class="val" data-count="14">0<span class="slash">/14</span></span></div>
+      <div class="metric"><span class="lbl">injected breaks that surfaced</span><span class="val" data-count="5">0<span class="slash">/5</span></span></div>
+      <div class="metric"><span class="hash">tier 1: 5/5 · system-FSS: 4/4 · system-BSS: 5/5</span></div>
+      <div class="pass">PASS — proven non-vacuous (it fails when broken)</div>
+    </div>
+  </div>
+  <div class="engine">⬡ &nbsp;ENGINE STATUS: STABLE — both halves symmetric · converged loop sound · system non-vacuous&nbsp; ⬡</div>
+  <div class="repro">→ these are not marketing numbers. <b>I ran <code style="color:var(--frost)">python run_duality_engine.py</code> and <code style="color:var(--frost)">python system_brutal_audit.py</code> on this exact source</b> — both torture hashes reproduced bit-for-bit, the converged loop returned 12/12 · 12/12 · 1 asymmetry, and the system audit scored 14/14 with all five injected breaks surfacing. The MACI suite is additionally <b>mutation-tested</b>: nine deliberate validator breaks → nine catches. <span style="color:var(--lead-dim)">(An earlier snapshot scored 13/14 — its converged layer passed a zero-test vacuously; the system audit caught it, and this is the patched build.)</span></div>
 
   <h2>the two halves — symmetric, not identical</h2>
   <table class="halves">
@@ -147,6 +163,36 @@
   </div>
   <div class="loop">FSS ⟲ BSS — over-strictness ⟷ silent acceptance, pulled taut against each other</div>
 
+  <h2>the converged layer — one auditor, both halves</h2>
+  <p class="body" style="margin:0 0 12px">Each half has its own FSS/BSS feeding its own foundation. The <b>converged</b> layer (<code class="k">shared/converged_audit.py</code>) unifies them: <b>seven shared invariants</b>, each given a HACI realization <i>and</i> a MACI realization, asserted to hold on both. Convergence is at the <i>property</i> level, not the input level — the halves speak different surface languages, so no single literal input feeds both. <b>FSS 12/12 · BSS 12/12.</b></p>
+  <div class="core" style="grid-template-columns:auto auto 1fr">
+    <span class="n">I1</span><span class="n" style="color:var(--ice)">AUTHORITY_INTEGRITY</span><span class="t">authority cannot be forged or exceeded — HACI: an AI-cased line can't carry human authority; MACI: a message can't exceed its granted authority. <b>both enforce</b></span>
+    <span class="n">I2</span><span class="n" style="color:var(--ice)">REFERENCE_SOUNDNESS</span><span class="t">references must resolve to real targets — <b>both hard-reject</b> dangling references</span>
+    <span class="n">I3</span><span class="n" style="color:var(--ice)">COMMITMENT_IMMUTABILITY</span><span class="t">a committed fact can't be silently changed — HACI: conflicting redeclaration errors; MACI: a decision must carry a terminal status. <b>both enforce, different mechanism</b></span>
+    <span class="n">I4</span><span class="n" style="color:var(--ice)">ACYCLICITY</span><span class="t">the dependency / decision graph has no cycles — <b>both detect</b> cycles</span>
+    <span class="n" style="color:var(--warn)">I5</span><span class="n" style="color:var(--warn)">CAUSAL_ORDER ⚠</span><span class="t" style="color:var(--parch)">nothing references something not yet established — <b style="color:var(--warn)">the one asymmetry</b> (below)</span>
+    <span class="n">I6</span><span class="n" style="color:var(--ok)">WELL_FORMED_ACCEPTED</span><span class="t">valid input is never wrongly rejected — the converged <b style="color:var(--ok)">FSS</b>; both accept clean input</span>
+    <span class="n">I7</span><span class="n" style="color:var(--bad)">MALFORMED_REJECTED</span><span class="t">invalid input is never silently accepted — the converged <b style="color:var(--bad)">BSS</b>; both reject malformed input</span>
+  </div>
+
+  <h2>the one asymmetry — where the brothers diverge</h2>
+  <p class="body" style="margin:0 0 10px">The converged loop's unique product isn't a pass/fail — it's <b>cross-half asymmetry detection</b>: the map of where the two sides enforce a shared invariant with <i>different strength</i>. Recorded, not failed — the most valuable signal the convergence produces. Exactly one stands today:</p>
+  <div class="tier bss" style="border-color:rgba(217,164,65,.4);background:rgba(217,164,65,.05)">
+    <div class="tn" style="color:var(--warn)">I5 · CAUSAL_ORDER — MACI's net strictly contains HACI's</div>
+    <div class="td"><b class="m" style="color:var(--machine)">MACI</b> enforces causal <b>order</b>: a forward reference is a hard <code class="k">FORWARD_REF</code> error — machines need strict ordering for replayable streams. <b class="h" style="color:var(--human)">HACI</b> enforces only reference <b>resolvability</b>: an out-of-order but resolvable reference is accepted with an <code class="k">OPEN_CONVERSATION</code> warning — a human document tolerates a forward reference the reader can follow. Both guard the reference axis; MACI's constraint <b>⊃</b> HACI's. The split is principled, not a bug — so it is logged as the asymmetry, not raised as a failure.</div>
+  </div>
+
+  <h2>auditing the auditor — the system audit</h2>
+  <p class="body" style="margin:0 0 12px">A component can be sound and the <i>assembly</i> still rotten — adapters mistranslate, a suite rubber-stamps, a crash gets swallowed. <code class="k">system_brutal_audit.py</code> aims the same <code class="k">3 | [2.1, 2.9] | 3</code> discipline at the whole engine, and proves <b>anti-vacuity</b>: it <i>injects</i> five breaks and demands each one surface as a failure.</p>
+  <div class="core" style="grid-template-columns:auto 1fr">
+    <span class="n" style="color:var(--ok)">✓</span><span class="t">break HACI cycle detection → the engine must report failure</span>
+    <span class="n" style="color:var(--ok)">✓</span><span class="t">break the MACI authority check → the engine must report failure</span>
+    <span class="n" style="color:var(--ok)">✓</span><span class="t">make the converged adapter lie (always "ok") → convergence must report unstable</span>
+    <span class="n" style="color:var(--ok)">✓</span><span class="t"><b style="color:var(--parch)">zero-test convergence must not pass</b> — a suite that runs nothing can't claim a clean bill <span style="color:var(--lead-dim)">(an earlier snapshot failed exactly here; this is the patch)</span></span>
+    <span class="n" style="color:var(--ok)">✓</span><span class="t">a crashing subprocess → the runner must not report stable</span>
+  </div>
+  <p class="body" style="margin-top:10px">All five surface. With Tier 1 (5/5 integration) + system-FSS (4/4) the assembled engine scores <b>14/14 — sound AND proven to fail when broken.</b> The auditor is not a rubber stamp, and now neither is the thing that checks the auditor.</p>
+
   <h2>a live taste — run the MACI brutal audit</h2>
   <p class="body" style="margin:0 0 12px">A faithful slice of the machine-side auditor, in your browser: FSS probes that <b style="color:var(--ok)">should pass</b> and BSS probes that <b style="color:var(--bad)">should be caught</b>, run through the ported MACI validator (same named checks: <code class="k">DECISION_WITHOUT_REFS</code>, <code class="k">REF_NOT_FOUND</code>, <code class="k">FORWARD_REF</code>, <code class="k">CHAIN_CYCLE</code>, <code class="k">DELEGATE_NO_SCOPE</code>…). Now <b>inject a regression</b> — disable a rule and watch the BSS tier catch the hole it opens. That is what "the suite has teeth" means.</p>
   <div class="auditwrap">
@@ -164,8 +210,8 @@
   </div>
 
   <div class="note">
-    <b>what this is.</b> the completed validation core of the <b>ACI</b> family — the module that proves <a href="https://davidwise01.github.io/haci/" style="color:var(--frost)">HACI</a> and <a href="https://davidwise01.github.io/maci/" style="color:var(--frost)">MACI</a> are both sound and held to one standard. It ships the real thing: <code>run_duality_engine.py</code>, and for each half a <code>*_validator.py</code>, a <code>*_torture.py</code>, and a <code>*_brutal_audit.py</code> (run <code>python run_duality_engine.py</code> → exits 0, writes <code>duality_engine_status.json</code>). It deliberately does <i>not</i> include the editor extension, the defensive publications, or the converters — those build <i>on top of</i> this stable core.
-    <br><b>honest line.</b> the status board reproduces a real local run (hashes matched). The live audit above is a faithful <i>slice</i> of the machine-side auditor — the full suites are 1108 + 3929 torture cases and 40 + 44 brutal probes in Python, not in this page. "Brutal audit to failure" is exhaustive adversarial fuzzing, not a formal proof. v0.1 / v2.6 reference validators.
+    <b>what this is.</b> the completed validation core of the <b>ACI</b> family — the module that proves <a href="https://davidwise01.github.io/haci/" style="color:var(--frost)">HACI</a> and <a href="https://davidwise01.github.io/maci/" style="color:var(--frost)">MACI</a> are both sound and held to one standard. It ships the real thing: <code>run_duality_engine.py</code>, <code>shared/converged_audit.py</code>, <code>system_brutal_audit.py</code>, and for each half a <code>*_validator.py</code>, a <code>*_torture.py</code>, and a <code>*_brutal_audit.py</code> (run <code>python run_duality_engine.py</code> → exits 0, writes <code>duality_engine_status.json</code>). It deliberately does <i>not</i> include the editor extension, the defensive publications, or the converters — those build <i>on top of</i> this stable core.
+    <br><b>honest line.</b> the whole status board reproduces a real local run — both torture hashes matched, the converged loop returned 12/12 · 12/12 · 1 asymmetry, and the system audit scored 14/14 with all five injected breaks surfacing. The live audit below is a faithful <i>slice</i> of the machine-side auditor — the full suites are 1108 + 3929 torture cases, 40 + 44 brutal probes, 12 + 12 converged invariants, and 14 system checks in Python, not in this page. "Brutal audit to failure" is exhaustive adversarial fuzzing, not a formal proof. v0.1 / v2.6 reference validators.
   </div>
 
   <div class="foot">
@@ -179,7 +225,7 @@
   "use strict";
   // ── count-up the verified metrics ──
   document.querySelectorAll('.val[data-count]').forEach(function(el){
-    var target=+el.getAttribute('data-count'), slash=el.querySelector('.slash').outerHTML, t0=null, dur=1100;
+    var target=+el.getAttribute('data-count'), sl=el.querySelector('.slash'), slash=sl?sl.outerHTML:'', t0=null, dur=1100;
     function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1); var v=Math.round((1-Math.pow(1-p,3))*target);
       el.innerHTML=v+slash; if(p<1) requestAnimationFrame(step); }
     requestAnimationFrame(step);
