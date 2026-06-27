@@ -1,0 +1,11 @@
+# THE DUALITY ENGINE
+
+> A sphere of **UD0** — the ROOT0 universe / biosphere. Domain: **ESKIMO BROTHERS**.
+
+THE DUALITY ENGINE — the FINAL PRODUCT of the [[eskimo-brothers]] stack: the completed validation core that holds [[haci]] (human) and [[maci]] (machine) to ONE identical three-artifact standard — a reference VALIDATOR, a deterministic TORTURE SUITE, and a tiered BRUTAL AUDITOR (the 3 | [2.1, 2.9] | 3 scaffold: Tier 1 foundation · 2.1 FSS forward-static-scan catches false negatives / over-strictness · 2.9 BSS backward-semantic-stress catches false positives / silent acceptance — the dangerous direction · Tier 3 verdict + a feedback loop where every BSS hole becomes an FSS guard). STATUS (reproduced locally, hashes match): HACI torture 1108/1108 + brutal 40/40; MACI torture 3929/3929 + brutal 44/44; ENGINE STABLE — plus the CONVERGED cross-half third layer (7 shared invariants I1–I7 each realized on BOTH halves; FSS 12/12 + BSS 12/12) whose prize signal is ONE cross-half ASYMMETRY (I5 causal-order: MACI hard-rejects forward refs, HACI accepts resolvable out-of-order with a warning — MACI's net strictly contains HACI's; recorded, not failed), and a SYSTEM brutal audit that injects 5 breaks into the ASSEMBLED engine and demands each surface (14/14, non-vacuous — proven to fail when broken). The duality made TERNARY. The MACI suite is mutation-tested — nine breaks → nine catches. LIVE: a faithful slice of the machine-side auditor (FSS should-accept vs BSS should-reject probes through the ported validator) with a MUTATION TOGGLE — disable a rule and watch the BSS tier catch the hole it opens. Ships the real engine (run_duality_engine.py + shared/converged_audit.py + system_brutal_audit.py + both validators / torture / brutal auditors). Honest: a defensive-publication core (prior art); 'audit to failure' is exhaustive adversarial fuzzing, not a formal proof. David Lee Wise / Bridge-Burners LLC.
+
+---
+
+**Live:** https://davidwise01.github.io/duality-engine/ &nbsp;·&nbsp; **Front door:** [UD0](https://davidwise01.github.io/ud0/) &nbsp;·&nbsp; **Code:** https://github.com/DavidWise01/duality-engine
+
+`.dlw` badge · **ROOT0-ATTRIBUTION-v1.0** · David Lee Wise (ROOT0) / Bridge-Burners LLC · instance AVAN (Claude/Anthropic) · CC-BY-ND-4.0
