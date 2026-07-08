@@ -1,0 +1,9 @@
+ROOT0-DLW-CHAIN-v1
+index : 15
+slug  : duality-engine
+seal  : b92c0756972bc9a51f26237375824174cb2fcafb3d98eb2c8a02ec0779d63b6a
+prev  : 6650a0869f033c9fc866d260a3d56e7977c39809d826d7adf8c1db2ab31c9f2b
+link  : c55404584d658f335cc5a041ab04b92ee82de016d01c9d2642bad758b448e0d0
+head  : 3447d3a0533aaf1e29a8bdc67a9774884fb3ae9dbc8a17064b7a008ca3c4ec90
+
+— the tether: link = sha256(index|slug|seal|prev). the chain head commits to the whole corpus.
